@@ -6,8 +6,8 @@ public class Crossword implements WordPuzzleInterface {
     private static char[] cilicia = {'e', 't', 'a', 'o', 'i', 'n', 's', 'h', 'r', 'd', 'l', 'u','c', 'm', 'w', 'f', 'g', 'y', 'p', 'b', 'v', 'k', 'j', 'x', 'q', 'z'};
     //Let me just say, I spent no less than half an hour perplexed as hell, because when I originally had the alphabet in most ideal order, it suddenly broke my program
     //It took me 35 minutes to figure out that I had the entire alphabet in upper case
-    private int[] LADIESANDGENTLEMENWEGOTHIM = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};  //letter used
-    private int[] STOPPUTTINGLETTERSYOUTWAT = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   //letter count for #
+    private int[] WHichLetter  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};  //letter used
+    private int[] LetterCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   //letter count for #
     private StringBuilder[] Row;
     private StringBuilder[] Col;
     private int[] rowfoundminus;
@@ -23,6 +23,7 @@ public class Crossword implements WordPuzzleInterface {
 
     @Override
     public char[][] fillPuzzle(char[][] board, DictInterface dictionary) {
+        long timer = System.nanoTime();
         length = board.length;                                                   //Declare length variable
         armenia = board;                                                         //Declaring read out board
         dict = dictionary;                                                       //Declaring dictionary
@@ -70,24 +71,38 @@ public class Crossword implements WordPuzzleInterface {
             colfoundminus[a] = lastMinusCol;                                    //Chart occurence of - sign in col array
             rowfoundminus[a] = lastMinusRow;                                    //Chart occurence of - sign in row array
         }
-
+            int counter = 0;
             for (int a = 0; a < length; a++) {                                  //Double array loop finding letters
                 for (int b = 0; b < length; b++) {
-
+                    
                     char letter = board[a][b];
 
                         if (Character.isAlphabetic(letter)) {                   //If a letter
-                            LADIESANDGENTLEMENWEGOTHIM[letter - 'a']++;         //Put into double array
+                            for(int c =0;c<26;c++){                             //Loop through the alphabet
+                                char found = board[a][b];                       //Letter at index
+                                Character.toLowerCase(found);                   //set to lowercase
+                                if(found==cilicia[c]){                          //if found letter
+                                    WHichLetter[c]++;                           //Mark letter
+                                                               
+                                }
+                            }
+                            
                         }
+                        counter++;
                     }
+
                 }
 
         artsakh = Lebanon;                                                      //Write in board = placeholder
 
         if (solve(0, 0)) {                                              //Solve starting at 0
+            long time = (System.nanoTime()-timer)/(1000000);
+            System.out.println(time);
             return artsakh;                                                     //YES
         }
         else {
+            long time = (System.nanoTime()-timer)/(1000000);
+            System.out.println(time);
             return null;                                                        //NO
         }
     }
@@ -101,12 +116,12 @@ public class Crossword implements WordPuzzleInterface {
                 boolean zero;
                 Row[row].setCharAt(col, cilicia[a]);                            //StrBldr array row = char
                 Col[col].setCharAt(row, cilicia[a]);                            //StrBldr array col = char
-                LADIESANDGENTLEMENWEGOTHIM[a]++;                                //Add to the # of times  letter [i] is used
+                WHichLetter[a]++;                                               //Add to the # of times  letter [i] is used
 
                 if (isValid(row, col, cilicia[a]) ) {                           //If isValid && the letter CAN be used
 
-                    lessthan =(LADIESANDGENTLEMENWEGOTHIM[a] < STOPPUTTINGLETTERSYOUTWAT[a]);
-                    zero = (STOPPUTTINGLETTERSYOUTWAT[a] == 0);
+                    lessthan =(WHichLetter[a] < LetterCount[a]);
+                    zero = (LetterCount[a] == 0);                               //IF NO LIMIT ON # OF LETTER
 
                     if((lessthan || zero )){
                         artsakh[row][col] = cilicia[a];                        //Write in board adds letter at[i]
@@ -130,7 +145,7 @@ public class Crossword implements WordPuzzleInterface {
                         }
                     }
                 }
-                LADIESANDGENTLEMENWEGOTHIM[a]--;                                //If char does NOT WORK, REMOVE THE COUNT BECAUSE IT DONT WORK MF
+                WHichLetter[a]--;                                               //If char does NOT WORK, REMOVE THE COUNT BECAUSE IT DONT WORK MF
 
                 Row[row].setCharAt(col, '+');                                //REPLACE x1
                 Col[col].setCharAt(row, '+');                                //REPLACE x2
@@ -186,11 +201,11 @@ public class Crossword implements WordPuzzleInterface {
                 Row[row].setCharAt(col, cilicia[a]);                            //StrBldr array row = char
                 Col[col].setCharAt(row, cilicia[a]);                            //StrBldr array col = char
 
-                LADIESANDGENTLEMENWEGOTHIM[a]++;                                //Add to the # of times  letter [i] is used
-                STOPPUTTINGLETTERSYOUTWAT[a] = countLim;                        //Limit array becomes current char
+                WHichLetter[a]++;                                               //Add to the # of times  letter [i] is used
+                LetterCount[a] = countLim;                                      //Limit array becomes current char
 
-                lessthan =(LADIESANDGENTLEMENWEGOTHIM[a] < STOPPUTTINGLETTERSYOUTWAT[a]);
-                zero = (STOPPUTTINGLETTERSYOUTWAT[a] == 0);
+                lessthan =(WHichLetter[a] < LetterCount[a]);
+                zero = (LetterCount[a] == 0);
 
                     if((lessthan || zero )){
                         artsakh[row][col] = cilicia[a];                         //Write in board using char
@@ -211,8 +226,8 @@ public class Crossword implements WordPuzzleInterface {
                     }
                 }
             
-                LADIESANDGENTLEMENWEGOTHIM[a]--;                                //If char does NOT WORK, REMOVE THE COUNT BECAUSE IT DONT WORK MF
-                STOPPUTTINGLETTERSYOUTWAT[a] = 0;                               //Ctrl z
+                WHichLetter[a]--;                                               //If char does NOT WORK, REMOVE THE COUNT BECAUSE IT DONT WORK MF
+                LetterCount[a] = 0;                                              //Ctrl z
 
                 Row[row].setCharAt(col, armenia[row][col]);                     //Replace
                 Col[col].setCharAt(row, armenia[row][col]);                     //Replace
@@ -234,7 +249,7 @@ public class Crossword implements WordPuzzleInterface {
         boolean updown = false;                                                 //boolean for col
 
 
-        boolean coledge = (col+1==length);
+        boolean coledge = (col+1==length);                                      //I'm too lazy to write out every single occurence
         boolean rowedge = (row+1==length);
         boolean nextcolminus = (col + 1 == rowfoundminus[row]);
         boolean nextrowminus = (row + 1 == colfoundminus[col]);
@@ -243,13 +258,10 @@ public class Crossword implements WordPuzzleInterface {
         boolean colonneg =  (rowfoundminus[row] == -1);
         boolean rowbeforemine = (row + 1 < colfoundminus[col]);
         boolean rowonmine = (colfoundminus[col] == -1);
-                                                                                //ALL FOR ROWS
-        if (nextcolminus) {                                                     //If next is a minus sign :(
-            int colTest = dict.searchPrefix(TempRow, 0, col);             //FETCH ME A WORD
-            if (colTest == 3 || colTest == 2) {                                 //If a word + prefix, or just a word
-                across = true;                                                  //Checks out
-            }
-        }
+        
+        
+        
+        //ALL FOR ROWS
         if (colpastneg) {                                                       //If we are past negative sign
             int colTest = dict.searchPrefix(TempRow, rowfoundminus[row] + 1, col); //Search for a small(er) word
             if (coledge) {                                                      //If next is border
@@ -263,12 +275,14 @@ public class Crossword implements WordPuzzleInterface {
                 }
             }
         }
-        if (nextcolminus) {
-            int colTest = dict.searchPrefix(TempRow, 0, col);             //Search for a word
-            if (colTest == 3 || colTest == 1) {                                 //If a word+ prefix, or just a prefix within restraints
-                across = true;                                                  //Skyrim belongs to the NORDS
+
+        if (nextcolminus) {                                                     //If next is a minus sign :(
+            int colTest = dict.searchPrefix(TempRow, 0, col);             //FETCH ME A WORD
+            if (colTest == 3 || colTest == 2) {                                 //If a word + prefix, or just a word
+                across = true;                                                  //Checks out
             }
         }
+
         if (colonneg) {                                                         //Landmine
             int colTest = dict.searchPrefix(TempRow, 0, col);             //Search for a word
             if (coledge) {                                                      //If at the Rio Grande
@@ -281,16 +295,19 @@ public class Crossword implements WordPuzzleInterface {
                     across = true;                                              //Veni Vidi Vici
                 }
             }
-        }                                                                       //END OF ROWS
+        }                                   
 
-        //Hello Peter                                                           //START OF COLUMN
-        if (nextrowminus) {                                                     //If next is neg
-            int rowTest = dict.searchPrefix(TempCol, 0, row);             //Bro get me a word STAT
-            if (rowTest == 3 || rowTest == 2) {                                 //If word + prefix or just word
-                updown = true;                                                  //Yipakaye
+
+        if (nextcolminus) {
+            int colTest = dict.searchPrefix(TempRow, 0, col);             //Search for a word
+            if (colTest == 3 || colTest == 1) {                                 //If a word+ prefix, or just a prefix within restraints
+                across = true;                                                  //Skyrim belongs to the NORDS
             }
         }
-        if (rowpastneg) {                   //If we have passed the negative
+                                            //END OF ROWS
+
+        //Hello Peter                                                           //START OF COLUMN
+        if (rowpastneg) {                                                       //If we have passed the negative
             int rowTest = dict.searchPrefix(TempCol, colfoundminus[col] + 1, row); //Chop it up into little pieces
             if (rowedge) {                                                      //If near Column border
                 if (rowTest == 3 || rowTest == 2) {                             //If Word
@@ -303,12 +320,22 @@ public class Crossword implements WordPuzzleInterface {
                 }
             }
         }
+
         if (rowbeforemine) {                                                    //if Before negative
             int rowTest = dict.searchPrefix(TempCol, 0, row);             //Go up till
             if (rowTest == 3 || rowTest == 1) {                                 //IF word or prefix
                 updown = true;                                                  //God Wills it
             }
         }
+
+        if (nextrowminus) {                                                     //If next is neg
+            int rowTest = dict.searchPrefix(TempCol, 0, row);             //Bro get me a word STAT
+            if (rowTest == 3 || rowTest == 2) {                                 //If word + prefix or just word
+                updown = true;                                                  //Yipakaye
+            }
+        }
+        
+        
         if (rowonmine) {                                                        //LORD SAVE US. THE ENEMY HAVE THE UPPER HAND "Medieval Total War 2 reference, great game btw"
             int rowTest = dict.searchPrefix(TempCol, 0, row);             //Ok lets start over
             if (rowedge) {                                                      //If border
@@ -332,6 +359,28 @@ public class Crossword implements WordPuzzleInterface {
 
     @Override
     public boolean checkPuzzle(char[][] emptyBoard, char[][] filledBoard, DictInterface dictionary) {
+        length = emptyBoard.length;
+        char[][] compare = new char[length][length];
+        for(int a = 0;a<length;a++){
+            for(int b = 0; b<length;b++){
+                char empty = emptyBoard[a][b];
+                if(empty=='-'){
+                    compare[a][b]=empty;
+                }
+            }
+        }
+
+        for(int a =0;a<length;a++){                         //imma be real, I cant figure out how to genuinley do this
+            for(int b = 0;b<length;b++){                    //The closest I can get to is to do a half solve but with much more focus on 
+                char first = compare[a][b];                 //Checking EACH letter and instead of trying to iterate through the alphabet checking if the next actual letter works
+                char second = filledBoard[a][b];
+                if(first=='-'){
+                    if(first!=second){
+                        return false;
+                    }
+                }
+            }
+        }
         return true; //IDFK
     }
     
